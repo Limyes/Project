@@ -18,18 +18,22 @@ var Footer={
 		this.$rightbtn=this.$footer.find('.icon-right')
 		this.isToEnd=false
 		this.isToStart=true
+		this.isAnimate=false
 		this.bindEvents()
 		this.render()
 	},
 	bindEvents:function(){
 		var _this=this
 		this.$rightbtn.on('click',function(){
+			if(_this.isAnimate) return
 			var itemWidth=_this.$box.find('li').outerWidth(true)
 			var rowCount=Math.floor(_this.$box.width()/itemWidth)
 			if(!_this.isToEnd){
+				_this.isAnimate=true
 				_this.$ul.animate({
 					left:'-='+rowCount*itemWidth
 				},400,function(){
+					_this.isAnimate=false
 					_this.isToStart=false
 					if(parseFloat(_this.$box.width())-parseFloat(_this.$ul.css('left'))>=parseFloat(_this.$ul.css('width'))){
 						_this.isToEnd=true
@@ -38,12 +42,15 @@ var Footer={
 			}	
 		})
 		this.$leftbtn.on('click',function(){
+			if(_this.isAnimate) return
 			var itemWidth=_this.$box.find('li').outerWidth(true)
 			var rowCount=Math.floor(_this.$box.width()/itemWidth)
 			if(!_this.isToStart){
+				_this.isAnimate=true
 				_this.$ul.animate({
 					left:'+='+rowCount*itemWidth
 				},400,function(){
+					_this.isAnimate=false
 					_this.isToEnd=false
 					if(parseFloat(_this.$ul.css('left'))>=0){
 						_this.isToStart=true
@@ -51,7 +58,7 @@ var Footer={
 				})
 			}	
 		})
-		this.$footer.on('click',function(){
+		this.$footer.on('click','li',function(){
 			$(this).addClass('active').siblings().removeClass('active')
 			EventCenter.fire('select-albumn',$(this).attr('data-channel-id'))
 		})
@@ -81,15 +88,30 @@ var Footer={
 		this.$ul.css({'width':count*width+'px'})
 	}
 }
-var App={
+var Fm={
 	init:function(){
 		this.bindEvents()
 	},
-	bingEvents:function(){
-		EventCenter.on('select-albumn',function(e,data){
-			console.log('select',data)
+	bindEvents:function(){
+		var _this=this
+		EventCenter.on('select-albumn',function(e,channelId){
+			_this.channelId=channelId
+			_this.loadMusic(function(){
+				_this.setMusic()
+			})
 		})
+	},
+	loadMusic:function(callback){
+		var _this=this
+		$.getJSON('https://jirenguapi.applinzi.com/fm/getSong.php',{channel:this.channelId}).done(function(ret){
+			_this.song=ret['song'][0]
+		})
+		callback()
+	},
+	setMusic:function(){
+		console.log('setmusic...')
 	}
 }
 
 Footer.init()
+Fm.init()

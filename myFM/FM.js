@@ -80,7 +80,7 @@ var Footer={
 				+'<h3>'+channel.name+'</h3>'+'</li>'
 		})
 		this.$ul.html(html)
-		this.setStyle();
+		this.setStyle()
 	},
 	setStyle:function(){
 		var count=this.$footer.find('li').length
@@ -141,6 +141,7 @@ var Fm={
 		var _this=this
 		$.getJSON('https://jirenguapi.applinzi.com/fm/getLyric.php',{sid:this.song.sid}).done(function(ret){
 			var lyric=ret.lyric
+			console.log(lyric)
 			var lyricObj={}
 			lyric.split('\n').forEach(function(line){
 				var times=line.match(/\d{2}:\d{2}/g)
@@ -148,6 +149,7 @@ var Fm={
 				if(Array.isArray(times)){
 					times.forEach(function(time){
 						lyricObj[time]=str
+						console.log( lyricObj)
 					})
 				}
 			})
@@ -171,9 +173,29 @@ var Fm={
 		second=second.length===2?second:'0'+second
 		this.$container.find('.current-time').text(min+':'+second)
 		this.$container.find('.bar-progress').css('width',this.audio.currentTime/this.audio.duration*100+'%')
-		console.log('update')
+		var line=this.lyricObj['0'+min+':'+second]
+		if(line){
+			this.$container.find('.lyric p').text(line).boomText()
+		}
 	}
 }
-
+$.fn.boomText=function(type){
+	type=type||'rollIn'
+	this.html(function(){
+		var arr=$(this).text().split('').map(function(word){
+			return '<span class="boomText">'+word+'</span>'
+		})
+		return arr.join('')
+	})
+	var index=0
+	var $boomTexts=$(this).find('span')
+	var clock=setInterval(function(){
+		$boomTexts.eq(index).addClass('animated '+type)
+		index++
+		if(index>=$boomTexts.length){
+			clearInterval(clock)
+		}
+	},300)
+}
 Footer.init()
 Fm.init()

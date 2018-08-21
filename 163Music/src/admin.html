@@ -46,7 +46,7 @@
 	      get_new_uptoken: false,          
 	      domain: 'http://pdsh2643g.bkt.clouddn.com', 
 	      container: 'uploadBox',    
-	      max_file_size: '20mb',
+	      max_file_size: '40mb',
 	      flash_swf_url: 'path/of/plupload/Moxie.swf',  
 	      max_retries: 3, 
 	      dragdrop: true,  
@@ -73,16 +73,17 @@
 	                 //    "key": "gogopher.jpg"
 	                 //  }
 	                 // 查看简单反馈
-	                 // var domain = up.getOption('domain');
-	                 // var res = parseJSON(info.response);
-	                 // var sourceLink = domain +"/"+ res.key; 获取上传成功后的文件的Url
+	                 var domain = up.getOption('domain');
+	                 var response = JSON.parse(info.response);
+	                 var sourceLink = 'http://'+domain +'/'+ encodeURIComponent(response.key);
+	                 uploadStatus.textContent = sourceLink+"  "+response.key
 	          },
 	          'Error': function(up, err, errTip) {
 	                 //上传出错时，处理相关的事情
 	          },
 	          'UploadComplete': function() {
 	                 //队列文件处理完毕后，处理相关的事情
-	                 uploadStatus.textContent = '上传完毕'
+	                 
 	          }
 	      }
 	  });

@@ -44,15 +44,13 @@
 	          },
 	          // 文件上传成功之后调用 FileUploaded
 	          'FileUploaded': (up, file, info) => {
-	            // window.eventHub.emit('afterUpload')
-	            // this.model.data.status = 'open'
-	            // var domain = up.getOption('domain');
-	            // var response = JSON.parse(info.response);
-	            // var sourceLink = 'http://' + domain + '/' + encodeURIComponent(response.key); 
-	            // window.eventHub.emit('new', {
-	            //   url: sourceLink,
-	            //   name: response.key
-	            // })
+	            var domain = up.getOption('domain');
+	            var response = JSON.parse(info.response);
+	            var sourceLink = 'http://' + domain + '/' + encodeURIComponent(response.key); 
+	            window.eventHub.emit('upload', {
+	              url: sourceLink,
+	              name: response.key
+	            })
 	          },
 	          'Error': function(up, err, errTip) {
 	            //上传出错时,处理相关的事情

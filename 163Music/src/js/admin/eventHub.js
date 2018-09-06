@@ -11,13 +11,9 @@ window.eventHub={
 		}
 	},
 	on(eventName,fn){
-		for(let key in this.events){
-			if(key===eventName){
-				if(this.events[key]===undefined){
-					this.events[key]=[]
-				}
-				this.events[key].push(fn)
-			}
+		if(this.events[eventName]===undefined){
+			this.events[eventName]=[]
 		}
+		this.events[eventName].push(fn)
 	}
 }

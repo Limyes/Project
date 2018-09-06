@@ -13,11 +13,14 @@
 		init(view,model){
 			this.view=view
 			this.model=model
+			this.active()
 			this.view.render(this.model.data)
 			window.eventHub.on('upload',(data)=>{
-				console.log("newSong 获得了data")
-				console.log(data)
+				this.active()
 			})
+		},
+		active(){
+			$(this.view.el).addClass('active')
 		}
 	}
 	controller.init(view,model)
